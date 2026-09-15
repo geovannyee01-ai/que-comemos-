@@ -76,6 +76,10 @@ export function RestaurantCard({ place, badgeKeys = [], onOpenMap }) {
             ))}
           </div>
         )}
+
+        {place.affinity?.reasons?.length > 0 && (
+          <p className="mt-2 text-xs text-char-800/50 dark:text-char-100/50">💡 {place.affinity.reasons[0]}</p>
+        )}
       </div>
     </div>
   );

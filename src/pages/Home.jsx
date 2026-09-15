@@ -5,7 +5,7 @@ import { useAppState } from "../state/AppState";
 import { QuickOptionButton } from "../components/QuickOptionButton";
 import { BottomNav } from "../components/Shell";
 import { dayPart, DAY_PART_LABEL, DAY_PART_HINT, formatTime, dayName } from "../lib/time";
-import { filterPlaces, sortByFastest, pickRandom, DEFAULT_FILTERS } from "../lib/ranking";
+import { filterPlaces, DEFAULT_FILTERS } from "../lib/ranking";
 import { QUICK_OPTIONS } from "../lib/foodTypes";
 import { isValidLatLon } from "../lib/geo";
 
@@ -98,6 +98,7 @@ export default function Home() {
     submitQuery,
     pickOption,
     filters,
+    pickWeightedRandom,
   } = useAppState();
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(null); // "hungry" | "surprise" | null
@@ -135,10 +136,12 @@ export default function Home() {
     setBusy("surprise");
     await ensurePlaces();
     const cualquiera = QUICK_OPTIONS.find((o) => o.id === "cualquiera");
-    const matched = sortByFastest(
-      filterPlaces(rawPlaces, { option: cualquiera, freeWords: [], filters: { ...DEFAULT_FILTERS, openNowOnly: true } })
-    );
-    const pick = pickRandom(matched.length ? matched : rawPlaces);
+    const matched = filterPlaces(rawPlaces, {
+      option: cualquiera,
+      freeWords: [],
+      filters: { ...DEFAULT_FILTERS, openNowOnly: true },
+    });
+    const pick = pickWeightedRandom(matched.length ? matched : rawPlaces);
     setBusy(null);
     if (pick) navigate(`/restaurante/${encodeURIComponent(pick.id)}`);
   };

@@ -31,6 +31,33 @@ de ninguna API key:
   fuente con esos datos (Google Places, Yelp, un agregador de delivery del
   país) sin rehacer el resto de la app.
 
+## Aprendizaje de preferencias
+
+`src/lib/personalization.js` reordena los resultados según lo que el propio
+usuario ha guardado y buscado en su dispositivo — un puntaje heurístico
+transparente, no un modelo de machine learning:
+
+- Un lugar guardado como favorito, o que comparte cocina/categoría con tus
+  favoritos, sube en la lista.
+- Las comidas marcadas como favoritas en Perfil, y lo que más buscas en el
+  historial (incluso cruzado con la hora del día — p. ej. si sueles pedir
+  sushi de noche), suman puntos.
+- Las restricciones alimentarias del Perfil dan un empujón suave a los
+  lugares que sí las cumplen (sin ocultar el resto — para eso están los
+  Filtros, que si excluyen).
+
+Ese puntaje se traduce en un "bono" de minutos equivalentes en el orden
+final: puede hacer que tu sushi favorito le gane a una hamburguesa 3 minutos
+más rápida, pero nunca a una opción real y notoriamente más cercana o
+rápida — sigue siendo honesto con el tiempo/distancia reales. **🎲
+Sorpréndeme** usa el mismo puntaje como peso en una elección aleatoria, así
+que no deja de ser una sorpresa, pero pesa un poco hacia lo que sueles
+elegir. Cuando un lugar se destaca así, la tarjeta muestra la insignia
+❤️ "Como te gusta" y la razón (p. ej. "Lo buscas seguido").
+
+Todo esto vive solo en `localStorage` de este navegador — no hay cuenta ni
+servidor que junte estos datos.
+
 ## Pantallas
 
 Inicio · Resultados · Mapa · Detalle del restaurante · Filtros · Favoritos ·

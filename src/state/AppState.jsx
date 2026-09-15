@@ -1,9 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useGeolocation } from "../lib/geo";
 import { fetchNearbyPlaces } from "../lib/overpass";
-import { enrichWithStatus, filterPlaces, sortByFastest, computeHighlights, DEFAULT_FILTERS } from "../lib/ranking";
+import { enrichWithStatus, filterPlaces, computeHighlights, DEFAULT_FILTERS } from "../lib/ranking";
+import { personalizeAndSort, weightedRandomPick } from "../lib/personalization";
 import { resolveFoodQuery, QUICK_OPTIONS } from "../lib/foodTypes";
 import { loadPrefs, savePrefs, loadFavorites, toggleFavorite as toggleFavoriteStorage, loadHistory, pushHistory, clearHistory as clearHistoryStorage } from "../lib/storage";
+import { dayPart as getDayPart } from "../lib/time";
 
 const AppStateContext = createContext(null);
 
@@ -63,7 +65,14 @@ export function AppStateProvider({ children }) {
       const { option: resolvedOption, freeWords: words } = resolveFoodQuery(trimmed);
       setOption(resolvedOption);
       setFreeWords(words);
-      setHistory(pushHistory({ type: "busqueda", text: trimmed || resolvedOption.label, optionId: resolvedOption.id }));
+      setHistory(
+        pushHistory({
+          type: "busqueda",
+          text: trimmed || resolvedOption.label,
+          optionId: resolvedOption.id,
+          dayPart: getDayPart(),
+        })
+      );
       return resolvedOption;
     },
     []
@@ -73,7 +82,7 @@ export function AppStateProvider({ children }) {
     setQueryText(opt.label);
     setOption(opt);
     setFreeWords([]);
-    setHistory(pushHistory({ type: "busqueda", text: opt.label, optionId: opt.id }));
+    setHistory(pushHistory({ type: "busqueda", text: opt.label, optionId: opt.id, dayPart: getDayPart() }));
   }, []);
 
   const placesWithStatus = useMemo(() => enrichWithStatus(rawPlaces), [rawPlaces]);
@@ -81,10 +90,15 @@ export function AppStateProvider({ children }) {
   const results = useMemo(() => {
     if (!option) return [];
     const matched = filterPlaces(placesWithStatus, { option, freeWords, filters });
-    return sortByFastest(matched);
-  }, [placesWithStatus, option, freeWords, filters]);
+    return personalizeAndSort(matched, { history, favorites, prefs, dayPart: getDayPart() });
+  }, [placesWithStatus, option, freeWords, filters, history, favorites, prefs]);
 
   const highlights = useMemo(() => computeHighlights(results), [results]);
+
+  const pickWeightedRandom = useCallback(
+    (candidates) => weightedRandomPick(candidates, { history, favorites, prefs, dayPart: getDayPart() }),
+    [history, favorites, prefs]
+  );
 
   const anyPlaceHasField = useCallback(
     (field) => placesWithStatus.some((p) => p[field] === "yes" || p[field] === "no"),
@@ -122,6 +136,7 @@ export function AppStateProvider({ children }) {
     results,
     highlights,
     anyPlaceHasField,
+    pickWeightedRandom,
 
     prefs,
     setPrefs,

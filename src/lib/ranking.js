@@ -64,6 +64,11 @@ export function computeHighlights(places) {
       p.openingStatus.closesAt > best.openingStatus.closesAt ? p : best
     , withCloseTime[0]).id;
   }
+
+  const withAffinity = open.filter((p) => p.affinity?.score >= 0.5);
+  if (withAffinity.length > 0) {
+    highlights.forYou = withAffinity.reduce((best, p) => (p.affinity.score > best.affinity.score ? p : best), withAffinity[0]).id;
+  }
   return highlights;
 }
 

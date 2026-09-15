@@ -19,4 +19,5 @@ export const HIGHLIGHT_META = {
   fastest: { emoji: "⚡", label: "Más rápido" },
   nearest: { emoji: "📍", label: "Más cerca" },
   openLatest: { emoji: "🌙", label: "Abierto hasta más tarde" },
+  forYou: { emoji: "❤️", label: "Como te gusta" },
 };
