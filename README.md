@@ -4,6 +4,9 @@ Asistente para decidir dónde comer — no un directorio de restaurantes. Combin
 qué quieres comer + dónde estás + qué está abierto ahora mismo + qué tan rápido
 puedes conseguirlo.
 
+**En vivo:** https://geovannyee01-ai.github.io/que-comemos-/ (se publica solo
+con cada push a `main`, ver [Despliegue](#despliegue)).
+
 ## Cómo funciona (arquitectura de datos)
 
 Esta primera versión usa **OpenStreetMap** como fuente de datos, sin necesidad
@@ -82,6 +85,18 @@ Requiere que el navegador permita geolocalización y pueda alcanzar
 `overpass-api.de` y `tile.openstreetmap.org` (ambos por HTTPS, sin API key).
 Si el permiso de ubicación se niega, la pantalla de inicio permite escribir
 latitud/longitud manualmente.
+
+## Despliegue
+
+`.github/workflows/deploy.yml` compila la app y la publica en GitHub Pages
+automáticamente en cada push a `main`. Usa `HashRouter` (URLs con `/#/...`)
+porque Pages es hosting estático puro, sin reglas de redirección en el
+servidor — así una recarga directa en `/#/mapa` sigue funcionando.
+
+**Paso único manual, la primera vez:** en GitHub, ve a este repositorio →
+**Settings → Pages** → en "Build and deployment" → "Source" elige
+**GitHub Actions** (en vez de "Deploy from a branch"). Después de eso cada
+push a `main` publica solo, sin volver a tocar nada.
 
 ## Stack
 
