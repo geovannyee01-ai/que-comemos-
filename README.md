@@ -68,7 +68,15 @@ elegir. Cuando un lugar se destaca así, la tarjeta muestra la insignia
 ❤️ "Como te gusta" y la razón (p. ej. "Lo buscas seguido").
 
 Todo esto vive solo en `localStorage` de este navegador — no hay cuenta ni
-servidor que junte estos datos.
+servidor que junte estos datos. La app pide el nombre en la primera visita
+(y se puede cambiar en Perfil) solo para personalizar el saludo — no es un
+registro/login, y ese nombre tampoco sale del dispositivo todavía.
+
+**Nota para el equipo:** si más adelante quieren ver, como negocio, qué está
+buscando/comiendo la gente en agregado, eso requiere sumar un backend propio
+(por ejemplo Supabase, como en el proyecto Avance) que reciba estos mismos
+eventos — hoy la arquitectura es intencionalmente 100% local y no manda nada
+a ningún servidor.
 
 ## Pantallas
 

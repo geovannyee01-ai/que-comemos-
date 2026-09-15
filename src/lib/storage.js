@@ -21,6 +21,7 @@ function writeJSON(key, value) {
 }
 
 export const DEFAULT_PREFS = {
+  name: "",
   favoriteFoodIds: [],
   favoriteRestaurantNames: [],
   budgetLevel: null, // "$" | "$$" | "$$$" | null

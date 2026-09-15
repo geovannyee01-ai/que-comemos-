@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Flame, Shuffle, Loader2, LocateFixed } from "lucide-react";
+import { Search, MapPin, Flame, Shuffle, Loader2, LocateFixed, User } from "lucide-react";
 import { useAppState } from "../state/AppState";
 import { QuickOptionButton } from "../components/QuickOptionButton";
 import { BottomNav } from "../components/Shell";
@@ -87,6 +87,45 @@ function LocationGate() {
   );
 }
 
+function NamePrompt() {
+  const { prefs, setPrefs } = useAppState();
+  const [value, setValue] = useState("");
+  const [dismissed, setDismissed] = useState(false);
+
+  if (prefs.name || dismissed) return null;
+
+  const save = (e) => {
+    e.preventDefault();
+    const trimmed = value.trim();
+    if (trimmed) setPrefs((p) => ({ ...p, name: trimmed }));
+  };
+
+  return (
+    <form
+      onSubmit={save}
+      className="mx-4 mt-4 rounded-2xl border border-char-100 dark:border-white/10 bg-white dark:bg-char-800 shadow-card p-4 flex items-center gap-3"
+    >
+      <User className="text-ember-500 shrink-0" size={20} />
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="¿Cómo te llamas?"
+        className="flex-1 bg-transparent outline-none text-sm min-w-0"
+      />
+      <button type="submit" className="text-ember-500 font-semibold text-sm shrink-0" disabled={!value.trim()}>
+        Guardar
+      </button>
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        className="text-char-800/40 dark:text-char-100/40 text-xs shrink-0"
+      >
+        Ahora no
+      </button>
+    </form>
+  );
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const {
@@ -99,6 +138,7 @@ export default function Home() {
     pickOption,
     filters,
     pickWeightedRandom,
+    prefs,
   } = useAppState();
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(null); // "hungry" | "surprise" | null
@@ -150,7 +190,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col pb-24">
       <div className="px-5 pt-8 pb-2">
         <p className="text-sm font-medium text-char-800/60 dark:text-char-100/60">
-          {DAY_PART_LABEL[part]} · {dayName(now)} {formatTime(now)}
+          {DAY_PART_LABEL[part]}{prefs.name ? `, ${prefs.name}` : ""} · {dayName(now)} {formatTime(now)}
           {coords && geoStatus === "granted" && (
             <span className="inline-flex items-center gap-1 ml-2 text-ember-600 dark:text-ember-400">
               <MapPin size={13} /> ubicación detectada
@@ -161,6 +201,7 @@ export default function Home() {
         <p className="text-sm text-char-800/60 dark:text-char-100/60 mt-1">{DAY_PART_HINT[part]}</p>
       </div>
 
+      <NamePrompt />
       <LocationGate />
 
       <form onSubmit={handleSubmit} className="px-5 mt-4">

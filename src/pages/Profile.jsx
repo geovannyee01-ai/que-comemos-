@@ -49,6 +49,16 @@ export default function Profile() {
     <Screen title="Perfil y preferencias">
       <div className="px-4 py-4 flex flex-col gap-5 pb-10">
         <section>
+          <h3 className="font-semibold text-sm mb-2">Tu nombre</h3>
+          <input
+            value={prefs.name}
+            onChange={(e) => setPrefs((p) => ({ ...p, name: e.target.value }))}
+            placeholder="¿Cómo te llamas?"
+            className="w-full rounded-xl border border-char-100 dark:border-white/10 bg-white dark:bg-char-800 px-4 py-2.5 text-sm outline-none"
+          />
+        </section>
+
+        <section>
           <h3 className="font-semibold text-sm mb-2">Comidas favoritas</h3>
           <div className="flex flex-wrap gap-2">
             {QUICK_OPTIONS.filter((o) => o.id !== "cualquiera").map((o) => (
