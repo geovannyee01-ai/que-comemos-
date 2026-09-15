@@ -89,6 +89,7 @@ export default function Filters() {
           <Toggle label="Opciones vegetarianas" checked={filters.vegetarian} onChange={(v) => set({ vegetarian: v })} />
           <Toggle label="Opciones veganas" checked={filters.vegan} onChange={(v) => set({ vegan: v })} />
           <Toggle label="Sin gluten" checked={filters.glutenFree} onChange={(v) => set({ glutenFree: v })} />
+          <Toggle label="Música en vivo" checked={filters.liveMusic} onChange={(v) => set({ liveMusic: v })} />
         </section>
 
         <p className="text-xs text-char-800/50 dark:text-char-100/50">

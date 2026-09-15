@@ -9,7 +9,7 @@ const OVERPASS_ENDPOINTS = [
   "https://overpass.kumi.systems/api/interpreter",
 ];
 
-const FOOD_AMENITIES = ["restaurant", "fast_food", "cafe", "bar", "pub", "ice_cream", "food_court"];
+const FOOD_AMENITIES = ["restaurant", "fast_food", "cafe", "bar", "pub", "nightclub", "ice_cream", "food_court"];
 const FOOD_SHOPS = ["bakery", "pastry", "confectionery"];
 
 function buildQuery(lat, lon, radiusMeters) {
@@ -37,7 +37,7 @@ function yesNoUnknown(v) {
   return "unknown"; // tag absent from OSM — we don't know, we don't guess
 }
 
-const SEATED_AMENITIES = new Set(["restaurant", "cafe", "bar", "pub", "food_court"]);
+const SEATED_AMENITIES = new Set(["restaurant", "cafe", "bar", "pub", "nightclub", "food_court"]);
 function dineInFromTags(tags) {
   if (tags.indoor_seating === "yes" || tags.outdoor_seating === "yes") return "yes";
   if (tags.indoor_seating === "no" && tags.outdoor_seating === "no") return "no";
@@ -70,6 +70,7 @@ function normalizeElement(el, userCoords) {
     vegetarian: yesNoUnknown(tags["diet:vegetarian"]),
     vegan: yesNoUnknown(tags["diet:vegan"]),
     glutenFree: yesNoUnknown(tags["diet:gluten_free"]),
+    liveMusic: yesNoUnknown(tags.live_music),
     wheelchair: tags.wheelchair || null,
     brand: tags.brand || null,
     distanceMeters,

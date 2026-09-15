@@ -1,8 +1,10 @@
 # ¿Qué Comemos Hoy? 🍔
 
-Asistente para decidir dónde comer — no un directorio de restaurantes. Combina
-qué quieres comer + dónde estás + qué está abierto ahora mismo + qué tan rápido
-puedes conseguirlo.
+Asistente para decidir dónde comer (o tomar algo) — no un directorio de
+restaurantes. Combina qué quieres + dónde estás + qué está abierto ahora
+mismo + qué tan rápido puedes conseguirlo. Además de comida, incluye
+**bares, pubs y discotecas** — útil de noche cuando lo que buscas es un lugar
+con música en vivo, no una cena.
 
 **En vivo:** https://geovannyee01-ai.github.io/que-comemos-/ (se publica solo
 con cada push a `main`, ver [Despliegue](#despliegue)).
@@ -13,11 +15,18 @@ Esta primera versión usa **OpenStreetMap** como fuente de datos, sin necesidad
 de ninguna API key:
 
 - **Overpass API** (`overpass-api.de`, con `overpass.kumi.systems` como
-  respaldo) para encontrar restaurantes, comida rápida, cafés, bares y
-  panaderías cerca de la ubicación del usuario, con sus etiquetas reales:
-  nombre, tipo de cocina, horario (`opening_hours`), teléfono, sitio web,
-  dirección y — cuando el lugar lo publicó — delivery, recogida y opciones
+  respaldo) para encontrar restaurantes, comida rápida, cafés, panaderías,
+  bares, pubs y discotecas cerca de la ubicación del usuario, con sus
+  etiquetas reales: nombre, tipo de cocina, horario (`opening_hours`),
+  teléfono (con botón directo para llamar), sitio web, dirección y — cuando
+  el lugar lo publicó — delivery, recogida, música en vivo y opciones
   vegetarianas/veganas/sin gluten.
+- **Fotos reales**, nunca inventadas (`src/lib/photos.js`): si el lugar tiene
+  las etiquetas `image`, `wikimedia_commons` o `wikidata` en OpenStreetMap,
+  se muestra esa foto real (Wikidata se resuelve vía su API pública, en lote,
+  sin API key). La mayoría de los lugares no tienen foto publicada — en ese
+  caso se muestra el ícono de categoría en vez de una imagen genérica o de
+  stock.
 - **`opening_hours`** se interpreta con un parser propio
   (`src/lib/openingHours.js`) que cubre la sintaxis más común de OSM y
   calcula si el lugar está abierto *ahora mismo*, a qué hora cierra o cuándo

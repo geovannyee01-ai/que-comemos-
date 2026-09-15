@@ -98,10 +98,22 @@ export const QUICK_OPTIONS = [
     keywords: ["comida rapida", "comida rápida", "fast food", "rapido", "rápido"],
   },
   {
+    id: "bares",
+    emoji: "🍸",
+    label: "Bares y música",
+    amenities: ["bar", "pub", "nightclub"],
+    primaryAmenities: ["bar", "pub", "nightclub"],
+    cuisineWords: [],
+    keywords: [
+      "bar", "bares", "trago", "tragos", "copas", "discoteca", "disco",
+      "vida nocturna", "musica en vivo", "música en vivo", "rumba", "party", "club",
+    ],
+  },
+  {
     id: "cualquiera",
     emoji: "🍽️",
     label: "Lo que sea",
-    amenities: ["restaurant", "fast_food", "cafe", "bar", "pub", "ice_cream", "food_court"],
+    amenities: ["restaurant", "fast_food", "cafe", "bar", "pub", "nightclub", "ice_cream", "food_court"],
     cuisineWords: [],
     keywords: [],
   },

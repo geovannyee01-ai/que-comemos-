@@ -1,34 +1,19 @@
 import { Link } from "react-router-dom";
-import { Heart, MapPin, Clock, Bike, ShoppingBag } from "lucide-react";
+import { Heart, MapPin, Clock, Bike, ShoppingBag, Phone, Music } from "lucide-react";
 import { StatusPill } from "./StatusPill";
 import { Badge, HIGHLIGHT_META } from "./Badge";
+import { PlacePhoto } from "./PlacePhoto";
 import { formatDistance } from "../lib/geo";
 import { useAppState } from "../state/AppState";
-
-const EMOJI_BY_AMENITY = {
-  restaurant: "🍽️",
-  fast_food: "🥡",
-  cafe: "☕",
-  bar: "🍹",
-  pub: "🍺",
-  ice_cream: "🍨",
-  food_court: "🍜",
-  bakery: "🥐",
-  pastry: "🍰",
-  confectionery: "🍬",
-};
 
 export function RestaurantCard({ place, badgeKeys = [], onOpenMap }) {
   const { favorites, toggleFavorite } = useAppState();
   const isFav = favorites.some((f) => f.id === place.id);
-  const emoji = EMOJI_BY_AMENITY[place.amenity] || "🍽️";
 
   return (
     <div className="rounded-2xl border border-char-100 bg-white shadow-card overflow-hidden dark:bg-char-800 dark:border-white/10">
       <Link to={`/restaurante/${encodeURIComponent(place.id)}`} className="block">
-        <div className="h-28 flex items-center justify-center text-5xl bg-gradient-to-br from-ember-100 to-ember-300 dark:from-ember-900 dark:to-ember-700">
-          {emoji}
-        </div>
+        <PlacePhoto place={place} className="h-28 w-full" emojiClassName="text-5xl" />
       </Link>
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
@@ -65,6 +50,11 @@ export function RestaurantCard({ place, badgeKeys = [], onOpenMap }) {
               <ShoppingBag size={12} /> Recogida
             </Badge>
           )}
+          {place.liveMusic === "yes" && (
+            <Badge tone="neutral">
+              <Music size={12} /> Música en vivo
+            </Badge>
+          )}
         </div>
 
         {badgeKeys.length > 0 && (
@@ -79,6 +69,16 @@ export function RestaurantCard({ place, badgeKeys = [], onOpenMap }) {
 
         {place.affinity?.reasons?.length > 0 && (
           <p className="mt-2 text-xs text-char-800/50 dark:text-char-100/50">💡 {place.affinity.reasons[0]}</p>
+        )}
+
+        {place.phone && (
+          <a
+            href={`tel:${place.phone}`}
+            onClick={(e) => e.stopPropagation()}
+            className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-char-900 text-white dark:bg-white dark:text-char-900 text-sm font-semibold py-2.5"
+          >
+            <Phone size={15} /> Llamar · {place.phone}
+          </a>
         )}
       </div>
     </div>

@@ -7,6 +7,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Screen } from "../components/Shell";
 import { StatusPill } from "../components/StatusPill";
+import { PlacePhoto } from "../components/PlacePhoto";
 import { EmptyState } from "../components/States";
 import { useAppState } from "../state/AppState";
 import { formatDistance } from "../lib/geo";
@@ -56,8 +57,10 @@ export default function MapPage() {
       <div className="h-[calc(100vh-56px)]">
         <MapContainer center={[coords.lat, coords.lon]} zoom={15} className="h-full w-full">
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            subdomains="abcd"
+            maxZoom={20}
           />
           <FitBounds points={points} />
           <Marker position={[coords.lat, coords.lon]} icon={userIcon}>
@@ -67,6 +70,7 @@ export default function MapPage() {
             <Marker key={p.id} position={[p.lat, p.lon]} icon={defaultIcon}>
               <Popup minWidth={200}>
                 <div className="text-sm">
+                  <PlacePhoto place={p} className="h-20 w-full rounded-lg mb-1.5" emojiClassName="text-3xl" />
                   <div className="font-bold">{p.name}</div>
                   <div className="text-xs text-char-800/60 capitalize">
                     {p.cuisine ? p.cuisine.split(";")[0].replace(/_/g, " ") : p.amenity.replace(/_/g, " ")}

@@ -11,6 +11,7 @@ export const DEFAULT_FILTERS = {
   vegetarian: false,
   vegan: false,
   glutenFree: false,
+  liveMusic: false,
 };
 
 export function enrichWithStatus(places, at = new Date()) {
@@ -31,6 +32,7 @@ export function filterPlaces(places, { option, freeWords, filters }) {
     if (f.vegetarian && p.vegetarian !== "yes") return false;
     if (f.vegan && p.vegan !== "yes") return false;
     if (f.glutenFree && p.glutenFree !== "yes") return false;
+    if (f.liveMusic && p.liveMusic !== "yes") return false;
     return true;
   });
 }

@@ -38,6 +38,6 @@ export const DAY_PART_HINT = {
   manana: "Es hora del desayuno — panaderías y cafés cerca de ti.",
   mediodia: "Hora de almuerzo — restaurantes y comida rápida abiertos ahora.",
   tarde: "Hora de la merienda — cafés y postres para la tarde.",
-  noche: "Hora de la cena — te mostramos lo que sigue abierto hasta tarde.",
-  madrugada: "Es madrugada — solo te mostramos lugares que de verdad están abiertos ahora.",
+  noche: "Hora de la cena — o de un bar con música en vivo. Te mostramos lo que sigue abierto hasta tarde.",
+  madrugada: "Es madrugada — solo te mostramos lugares (comida o bares) que de verdad están abiertos ahora.",
 };

@@ -4,6 +4,7 @@ import { fetchNearbyPlaces } from "../lib/overpass";
 import { enrichWithStatus, filterPlaces, computeHighlights, DEFAULT_FILTERS } from "../lib/ranking";
 import { personalizeAndSort, weightedRandomPick } from "../lib/personalization";
 import { resolveFoodQuery, QUICK_OPTIONS } from "../lib/foodTypes";
+import { directPhotoUrl, resolveWikidataPhotos } from "../lib/photos";
 import { loadPrefs, savePrefs, loadFavorites, toggleFavorite as toggleFavoriteStorage, loadHistory, pushHistory, clearHistory as clearHistoryStorage } from "../lib/storage";
 import { dayPart as getDayPart } from "../lib/time";
 
@@ -85,7 +86,38 @@ export function AppStateProvider({ children }) {
     setHistory(pushHistory({ type: "busqueda", text: opt.label, optionId: opt.id, dayPart: getDayPart() }));
   }, []);
 
-  const placesWithStatus = useMemo(() => enrichWithStatus(rawPlaces), [rawPlaces]);
+  const [photoOverrides, setPhotoOverrides] = useState({});
+
+  useEffect(() => {
+    const pending = rawPlaces.filter((p) => !directPhotoUrl(p.tags) && p.tags?.wikidata);
+    if (pending.length === 0) return;
+    let cancelled = false;
+    resolveWikidataPhotos(pending.map((p) => p.tags.wikidata))
+      .then((byQid) => {
+        if (cancelled || byQid.size === 0) return;
+        setPhotoOverrides((prev) => {
+          const next = { ...prev };
+          for (const p of pending) {
+            const url = byQid.get(p.tags.wikidata);
+            if (url) next[p.id] = url;
+          }
+          return next;
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [rawPlaces]);
+
+  const placesWithStatus = useMemo(
+    () =>
+      enrichWithStatus(rawPlaces).map((p) => ({
+        ...p,
+        photoUrl: photoOverrides[p.id] || directPhotoUrl(p.tags),
+      })),
+    [rawPlaces, photoOverrides]
+  );
 
   const results = useMemo(() => {
     if (!option) return [];

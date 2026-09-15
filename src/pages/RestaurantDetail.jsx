@@ -1,18 +1,14 @@
 import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, Phone, Navigation, Globe, MapPin, Clock, Bike, ShoppingBag, Armchair, Leaf, WheatOff } from "lucide-react";
+import { Heart, Phone, Navigation, Globe, MapPin, Clock, Bike, ShoppingBag, Armchair, Leaf, WheatOff, Music } from "lucide-react";
 import { Screen } from "../components/Shell";
 import { StatusPill } from "../components/StatusPill";
 import { Badge } from "../components/Badge";
+import { PlacePhoto } from "../components/PlacePhoto";
 import { EmptyState } from "../components/States";
 import { useAppState } from "../state/AppState";
 import { formatDistance } from "../lib/geo";
 import { getOpeningStatus } from "../lib/openingHours";
-
-const EMOJI_BY_AMENITY = {
-  restaurant: "🍽️", fast_food: "🥡", cafe: "☕", bar: "🍹", pub: "🍺",
-  ice_cream: "🍨", food_court: "🍜", bakery: "🥐", pastry: "🍰", confectionery: "🍬",
-};
 
 function TagLine({ icon: Icon, value, na = "No disponible" }) {
   return (
@@ -61,9 +57,7 @@ export default function RestaurantDetail() {
 
   return (
     <Screen title={place.name} back>
-      <div className="h-40 flex items-center justify-center text-7xl bg-gradient-to-br from-ember-100 to-ember-300 dark:from-ember-900 dark:to-ember-700">
-        {EMOJI_BY_AMENITY[place.amenity] || "🍽️"}
-      </div>
+      <PlacePhoto place={place} className="h-40 w-full" emojiClassName="text-7xl" />
 
       <div className="px-4 -mt-6">
         <div className="rounded-2xl bg-white dark:bg-char-800 shadow-card p-4">
@@ -103,11 +97,11 @@ export default function RestaurantDetail() {
       <div className="px-4 mt-4 grid grid-cols-2 gap-2">
         <a
           href={place.phone ? `tel:${place.phone}` : undefined}
-          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold ${
+          className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-center ${
             place.phone ? "bg-char-900 text-white dark:bg-white dark:text-char-900" : "bg-char-100 text-char-800/40 dark:bg-white/5 dark:text-char-100/30 pointer-events-none"
           }`}
         >
-          <Phone size={16} /> Llamar
+          <Phone size={16} /> {place.phone ? `Llamar · ${place.phone}` : "Sin teléfono"}
         </a>
         <a
           href={mapsUrl}
@@ -139,11 +133,12 @@ export default function RestaurantDetail() {
       </div>
 
       <div className="px-4 mt-5 pb-8">
-        <h3 className="font-semibold text-sm mb-2">Delivery, recogida y dieta</h3>
+        <h3 className="font-semibold text-sm mb-2">Delivery, recogida y más</h3>
         <div className="rounded-2xl bg-white dark:bg-char-800 shadow-card p-4">
           <YesNoUnknown label={<span className="flex items-center gap-1.5"><Bike size={14}/> Delivery</span>} value={place.delivery} />
           <YesNoUnknown label={<span className="flex items-center gap-1.5"><ShoppingBag size={14}/> Recogida</span>} value={place.takeaway} />
-          <YesNoUnknown label={<span className="flex items-center gap-1.5"><Armchair size={14}/> Comer en el local</span>} value={place.dineIn} />
+          <YesNoUnknown label={<span className="flex items-center gap-1.5"><Armchair size={14}/> Comer/tomar en el local</span>} value={place.dineIn} />
+          <YesNoUnknown label={<span className="flex items-center gap-1.5"><Music size={14}/> Música en vivo</span>} value={place.liveMusic} />
           <YesNoUnknown label={<span className="flex items-center gap-1.5"><Leaf size={14}/> Opción vegetariana</span>} value={place.vegetarian} />
           <YesNoUnknown label={<span className="flex items-center gap-1.5"><Leaf size={14}/> Opción vegana</span>} value={place.vegan} />
           <YesNoUnknown label={<span className="flex items-center gap-1.5"><WheatOff size={14}/> Sin gluten</span>} value={place.glutenFree} />
